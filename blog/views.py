@@ -44,14 +44,18 @@ def post_share(request, post_id):
         form = EmailPostForm(request.POST)
         if form.is_valid():
             # Form fields passed validation
-            cd = form.changed_data
+            cd = form.cleaned_data
             # ... send email
             post_url = request.build_absolute_uri(post.get_absolute_url())
             subject = f"{cd['name']} recommends you read {post.title}"
             message = f"Read {post.title} at {post_url}\n\n\n" \
                 f"{cd['name']}\'s comments: {cd['comments']}"
-            send_mail(subject, message, settings.EMAIL_HOST_USER,
-                      [cd['to']], fail_silently=False)
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                [cd['to']],
+            )
             send = True
 
     else:
