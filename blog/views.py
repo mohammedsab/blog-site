@@ -3,14 +3,21 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.mail import send_mail
 from django.conf import settings
 
+from taggit.models import Tag
+
 from .models import Post, Comments
 from .forms import EmailPostForm, CommentForm
 
 # Create your views here.
 
 
-def post_list(request):
+def post_list(request, tag_slug=None):
     posts = Post.published.all()
+    tag = None
+
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = posts.filter(tags__in=[tag])
 
     paginator = Paginator(posts, 3)
     page_number = request.GET.get('page')
