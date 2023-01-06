@@ -20,8 +20,8 @@ Share a post
             
             {% for field in form %}
                 <div>
-                    {{field.errors}}
                     {{field.label_tag}}  {{field}}
+                    {{field.errors}}
                 </div>
             {% endfor %}
                 
