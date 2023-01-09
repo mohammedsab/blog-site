@@ -1,4 +1,7 @@
 {% extends 'blog/base.html' %}
+{% load blog_tags %}
+{% load blog_filters %}
+
 {% block title %}
     My Blog
 {% endblock title %}
@@ -35,7 +38,7 @@
             Published {{post.Published}} by {{post.author}}
         </p>
 
-        {{post.body|truncatewords:30|linebreaks}}
+        {{post.body|markdown|safe|truncatewords:30|linebreaks}}
     {% endfor %}
 
     {% include 'blog/pagination.html' with page=posts %}
