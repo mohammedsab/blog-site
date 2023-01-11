@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
 
     'taggit',
-
+    'django.contrib.postgres',
     'django.contrib.sites',
     'django.contrib.sitemaps',
 

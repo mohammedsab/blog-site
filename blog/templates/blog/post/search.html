@@ -1,0 +1,26 @@
+{% load blog_tags %}
+{% load blog_filters %}
+
+
+{% block content %}
+    
+      <h1>Post containing "{{ query }}"</h1>
+      <h3>
+        
+        {% comment %} {% with results.count as total_results %}
+            Found {{ total_results }} result{{total_results|pluralize}}
+        {% endwith %} {% endcomment %}
+            
+      </h3>
+      
+      {% for post in results %}
+        {% include 'blog/post/post_card.html' with post=post %}
+
+        {%empty%}
+            <p>There are no results for your query.</p>
+      {% endfor %}
+      
+    
+        
+    
+{% endblock content %}

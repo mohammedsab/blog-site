@@ -4,10 +4,11 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Count
 
+from django.contrib.postgres.search import SearchVector
 from taggit.models import Tag
 
 from .models import Post, Comments
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 
 # Create your views here.
 
@@ -15,6 +16,17 @@ from .forms import EmailPostForm, CommentForm
 def post_list(request, tag_slug=None):
     posts = Post.published.all()
     tag = None
+
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            posts = Post.published.annotate(
+                search=SearchVector('title', 'body'),
+            ).filter(search=query)
 
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
@@ -31,7 +43,7 @@ def post_list(request, tag_slug=None):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'blog/post/list.html',
-                  {'posts': posts, 'page_obj': page_obj, 'tag': tag})
+                  {'posts': posts, 'page_obj': page_obj, 'tag': tag, 'query': query, })
 
 
 def post_detail(request, year, month, day, post):
@@ -96,3 +108,24 @@ def post_share(request, post_id):
         form = EmailPostForm()
 
     return render(request, 'blog/post/share.html', {'post': post, 'form': form, 'send': send})
+
+
+# def post_search(request):
+#     form = SearchForm()
+#     query = None
+#     results = []
+
+#     if 'query' in request.GET:
+#         form = SearchForm(request.GET)
+#         if form.is_valid():
+#             query = form.cleaned_data['query']
+#             results = Post.published.annotate(
+#                 search=SearchVector('title', 'body'),
+#             ).filter(search=query)
+
+#     return render(request, 'blog/post/list.html',
+#                   {
+#                       'form': form,
+#                       'query': query,
+#                       'results': results,
+#                   })

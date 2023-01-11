@@ -7,39 +7,22 @@
 {% endblock title %}
 
 {% block content %}
-    <h1>My blog.</h1>
     
     {% if tag %}
         <h2>Posts tagged with "{{tag.name}}"
     {% endif %}
+
+    
+    {% if query %}
         
+        {% include 'blog/post/search.html' with results=posts %}
+        
+    {% else %}    
     {% for post in posts %}
-        <h2>
-            <a href="{{ post.get_absolute_url }}">
-                {{ post.title }}
-            </a>
-
-        </h2>
-
-        <p class="tags"> Tags: 
-            {% for tag in post.tags.all %}
-                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">
-                    {{tag.name}}
-                </a>
-                
-                {% if not forloop.last %}
-                    ,
-                {% endif %}
-                    
-            {% endfor %}
-        </p> 
+        {% include 'blog/post/post_card.html' with post=post %}
         
-        <p class="date">
-            Published {{post.Published}} by {{post.author}}
-        </p>
-
-        {{post.body|markdown|safe|truncatewords:30}}
     {% endfor %}
 
     {% include 'blog/pagination.html' with page=posts %}
+    {% endif %}
 {% endblock content %}

@@ -1,7 +1,19 @@
-<ul>
+{% comment %} <ul>
     {% for post in latest_post %}
         <li>
             <a href="{{post.get_absolute_url}}">{{post.title}}</a>
         </li>
     {% endfor %}
-</ul>
+</ul> {% endcomment %}
+<div class="card" style=" margin:15px">
+            <div class="card-header">
+                Latest posts
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for post in latest_post %}
+                    <li class="list-group-item">
+                        <a href="{{post.get_absolute_url}}">{{post.title}}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
